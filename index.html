@@ -6,29 +6,58 @@
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene stats>
+    <a-scene cursor="rayOrigin: mouse">
       <a-assets>
         <a-asset-item id="silla" src="activos/silla.glb"></a-asset-item>
         <a-asset-item id="trees" src="activos/trees.glb"></a-asset-item>
         <a-asset-item id="ambulancia" src="activos/ambulancia.glb"></a-asset-item>
         <a-asset-item id="bed" src="activos/bed.glb"></a-asset-item>
         <a-asset-item id="IVfluid" src="activos/IVfluid.glb"></a-asset-item>
+        <a-asset-item id="icono_ambulancia" src="activos/icono_ambulancia.glb"></a-asset-item>
+        <audio id="interact" src="sonidos/interact.mp3"></audio>
       </a-assets>
 
       <a-entity gltf-model="#silla" position="1.5 0 1.5" rotation="0 -150 0"></a-entity>
       <a-entity gltf-model="#trees" position="0 1.8 -2" rotation="0 0 0" scale="1.5 1.5 1.5"></a-entity>
       <a-entity gltf-model="#trees" position="3 1.8 -2" rotation="0 20 0" scale="1.5 1.5 1.5"></a-entity>
-      <a-entity gltf-model="#ambulancia" position="-3 0 1" rotation="0 -75 0" scale="0.2 0.2 0.2"></a-entity>
+      <a-entity gltf-model="#ambulancia" position="-3 0 1" rotation="0 -75 0" scale="0.2 0.2 0.2"
+        animation__enter="property: scale; to: 0.21 0.21 0.21;
+        dur: 200; startEvents: mouseenter"
+        animation__leave="property: scale; to: 0.2 0.2 0.2;
+        dur: 200; startEvents: mouseleave"></a-entity>
+      </a-entity>
       <a-entity gltf-model="#bed" position="1 0.2 0" rotation="0 -30 0" scale="1.5 1.5 1.5"></a-entity>  
       <a-entity gltf-model="#IVfluid" position="0.5 0.7 0" rotation="0 30 0" scale="1.5 1.5 1.5"></a-entity>
-      <a-entity camera="fov:60" look-controls wasd-controls position="0 1.6 0"></a-entity>
+      <a-entity gltf-model="#icono_ambulancia" position="2 0.5 0" rotation="0 -75 0" scale="0.2 0.2 0.2"
+        animation__enter="property: scale; to: 0.3 0.3 0.3;
+        dur: 200; startEvents: mouseenter"
+        animation__leave="property: scale; to: 0.2 0.2 0.2;
+        dur: 200; startEvents: mouseleave"
+        animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 3000; easing: linear"
+        sound="src: #interact; on: click; positional: true"></a-entity>
+      <a-entity camera="fov:60" look-controls wasd-controls position="0 1.6 0">
+        
+      </a-entity>
+      <a-text value="Salir de ejercicio" color="#FFFFFF" position="-1.5 2.5 0.5" rotation="0 90 0"
+      align="center" width="4" color="#222D62"></a-text>
+      <a-box position="1.5 0.5 -3" color="#00000"
+        animation__click="property: rotation;
+        from: 0 0 0; to: 0 360 0;
+        dur: 1000; startEvents: click"
+        animation__enter="property: scale; to: 1.2 1.2 1.2;
+        dur: 200; startEvents: mouseenter"
+        animation__leave="property: scale; to: 1 1 1;
+        dur: 200; startEvents: mouseleave"></a-box>
+      <a-text value="Abre la caja" color="#FFFFFF" position="1.5 1.5 -4"
+      align="center" width="4" color="#222D62"></a-text>
+      </a-box>
       <a-box position="0 0.2 0" rotation="0 70 0" color="#4CC3D9" scale="0.5 0.5 0.5"></a-box>
 
       <a-plane rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
+      <a-sky color="#1B2033"></a-sky>
 
-      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-      <a-entity light="type: directional; intensity: 0.8" position="-1 2 1"></a-entity>
+      <a-light type="ambient" color="#8FA0D8" intensity="0.25"></a-light>
+      <a-light type="point" color="#FF9A3C" intensity="3" position="0.5 1.5 0.5"></a-light>
     </a-scene>
   </body>
 </html>
