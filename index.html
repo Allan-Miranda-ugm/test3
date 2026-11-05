@@ -15,16 +15,96 @@
         <a-asset-item id="IVfluid" src="activos/IVfluid.glb"></a-asset-item>
         <a-asset-item id="icono_ambulancia" src="activos/icono_ambulancia.glb"></a-asset-item>
         <audio id="interact" src="sonidos/interact.mp3"></audio>
+        <audio id="finish" src="sonidos/finish.mp3"></a-audio>
+        <audio id="ambient_forest" src="sonidos/ambient_forest.mp3" autoplay loop></audio>
       </a-assets>
+      <script>
+  const scene = document.querySelector('a-scene');
 
+  const cantidadArboles = 30;
+
+  // Posición de la ambulancia
+  const ambulanciaX = -3;
+  const ambulanciaZ = 1;
+
+  // Distancia mínima respecto a la ambulancia
+  const distanciaAmbulancia = 3;
+  const distanciaCentro = 5;
+
+  for (let i = 0; i < cantidadArboles; i++) {
+
+    const tree = document.createElement('a-entity');
+
+    tree.setAttribute('gltf-model', '#trees');
+
+    let x, z;
+
+    do {
+      x = (Math.random() * 10) - 5;
+      z = (Math.random() * 10) - 5;
+
+    } while (
+      // Evitar el centro del plano
+      Math.sqrt(x * x + z * z) < 4 ||
+
+      // Evitar la zona de la ambulancia
+      Math.sqrt(
+        (x - ambulanciaX) ** 2 +
+        (z - ambulanciaZ) ** 2
+      ) < distanciaAmbulancia
+    );
+
+    tree.setAttribute('position', `${x} 2.5 ${z}`);
+
+    const escala = 2;
+
+    tree.setAttribute(
+      'scale',
+      `${escala} ${escala} ${escala}`
+    );
+
+    tree.setAttribute(
+      'rotation',
+      `0 ${Math.random() * 360} 0`
+    );
+
+    scene.appendChild(tree);
+  }
+</script>
+<script>
+  const ambulancia = document.querySelector('#ambulancia');
+  const pantalla = document.querySelector('#pantalla-negra');
+
+  ambulancia.addEventListener('click', () => {
+    pantalla.setAttribute('visible', true);
+    pantalla.emit('oscurecer');
+  });
+</script>
+<a-plane
+  id="pantalla-negra"
+  position="0 0 -0.5"
+  width="2"
+  height="2"
+  color="black"
+  material="shader: flat; transparent: true; opacity: 0"
+  visible="false"
+  animation__fade="property: material.opacity;
+                 from: 0;
+                 to: 1;
+                 dur: 2000;
+                 startEvents: oscurecer">
+</a-plane>
       <a-entity gltf-model="#silla" position="1.5 0 1.5" rotation="0 -150 0"></a-entity>
       <a-entity gltf-model="#trees" position="0 1.8 -2" rotation="0 0 0" scale="1.5 1.5 1.5"></a-entity>
       <a-entity gltf-model="#trees" position="3 1.8 -2" rotation="0 20 0" scale="1.5 1.5 1.5"></a-entity>
+      
       <a-entity gltf-model="#ambulancia" position="-3 0 1" rotation="0 -75 0" scale="0.2 0.2 0.2"
         animation__enter="property: scale; to: 0.21 0.21 0.21;
         dur: 200; startEvents: mouseenter"
         animation__leave="property: scale; to: 0.2 0.2 0.2;
-        dur: 200; startEvents: mouseleave"></a-entity>
+        dur: 200; startEvents: mouseleave"
+        sound= "src: #finish; on: click; positional: false"></a-entity>
+      </a-entity>
       </a-entity>
       <a-entity gltf-model="#bed" position="1 0.2 0" rotation="0 -30 0" scale="1.5 1.5 1.5"></a-entity>  
       <a-entity gltf-model="#IVfluid" position="0.5 0.7 0" rotation="0 30 0" scale="1.5 1.5 1.5"></a-entity>
@@ -36,19 +116,13 @@
         animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 3000; easing: linear"
         sound="src: #interact; on: click; positional: true"></a-entity>
       <a-entity camera="fov:60" look-controls wasd-controls position="0 1.6 0">
-        
+        <a-entity
+    light="type: spot; color: #FFFFFF; intensity: 3; angle: 35; penumbra: 0.5; distance: 15"
+    position="0 0 -0.5"
+    rotation="0 0 0">
+  </a-entity>
       </a-entity>
       <a-text value="Salir de ejercicio" color="#FFFFFF" position="-1.5 2.5 0.5" rotation="0 90 0"
-      align="center" width="4" color="#222D62"></a-text>
-      <a-box position="1.5 0.5 -3" color="#00000"
-        animation__click="property: rotation;
-        from: 0 0 0; to: 0 360 0;
-        dur: 1000; startEvents: click"
-        animation__enter="property: scale; to: 1.2 1.2 1.2;
-        dur: 200; startEvents: mouseenter"
-        animation__leave="property: scale; to: 1 1 1;
-        dur: 200; startEvents: mouseleave"></a-box>
-      <a-text value="Abre la caja" color="#FFFFFF" position="1.5 1.5 -4"
       align="center" width="4" color="#222D62"></a-text>
       </a-box>
       <a-box position="0 0.2 0" rotation="0 70 0" color="#4CC3D9" scale="0.5 0.5 0.5"></a-box>
