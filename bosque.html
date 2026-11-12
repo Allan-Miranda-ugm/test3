@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bosque</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <div id="fade"></div>
+    <style>
+    #fade {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1.5s ease;
+        z-index: 9999;
+    }
+
+    #fade.active {
+        opacity: 1;
+    }
+</style>
+    <a-scene cursor="rayOrigin: mouse">
+      <a-assets>
+        <a-asset-item id="m_aventurero" src="activos/m_aventurero.glb"></a-asset-item>
+        <a-asset-item id="silla" src="activos/silla.glb"></a-asset-item>
+        <a-asset-item id="trees" src="activos/trees.glb"></a-asset-item>
+        <a-asset-item id="ambulancia" src="activos/ambulancia.glb"></a-asset-item>
+        <a-asset-item id="bed" src="activos/bed.glb"></a-asset-item>
+        <a-asset-item id="IVfluid" src="activos/IVfluid.glb"></a-asset-item>
+        <a-asset-item id="icono_ambulancia" src="activos/icono_ambulancia.glb"></a-asset-item>
+        <audio id="interact" src="sonidos/interact.mp3"></audio>
+        <audio id="finish" src="sonidos/finish.mp3"></audio>
+        <audio id="ambient_forest" src="sonidos/ambient_forest.mp3"></audio>
+      </a-assets>
+      <script>
+  const scene = document.querySelector('a-scene');
+
+  const cantidadArboles = 30;
+
+  // Posición de la ambulancia
+  const ambulanciaX = -3;
+  const ambulanciaZ = 1;
+
+  // Distancia mínima respecto a la ambulancia
+  const distanciaAmbulancia = 3;
+  const distanciaCentro = 5;
+
+  for (let i = 0; i < cantidadArboles; i++) {
+
+    const tree = document.createElement('a-entity');
+
+    tree.setAttribute('gltf-model', '#trees');
+
+    let x, z;
+
+    do {
+      x = (Math.random() * 10) - 5;
+      z = (Math.random() * 10) - 5;
+
+    } while (
+      // Evitar el centro del plano
+      Math.sqrt(x * x + z * z) < 4 ||
+
+      // Evitar la zona de la ambulancia
+      Math.sqrt(
+        (x - ambulanciaX) ** 2 +
+        (z - ambulanciaZ) ** 2
+      ) < distanciaAmbulancia
+    );
+
+    tree.setAttribute('position', `${x} 2.5 ${z}`);
+
+    const escala = 2;
+
+    tree.setAttribute(
+      'scale',
+      `${escala} ${escala} ${escala}`
+    );
+
+    tree.setAttribute(
+      'rotation',
+      `0 ${Math.random() * 360} 0`
+    );
+
+    scene.appendChild(tree);
+  }
+</script>
+      <a-entity gltf-model="#m_aventurero" position="0 0 0" rotation="-90 -30 0" scale="0.7 0.7 0.7"></a-entity>
+      <a-entity gltf-model="#silla" position="1.5 0 1.5" rotation="0 -150 0"></a-entity>
+      <a-entity gltf-model="#trees" position="0 1.8 -2" rotation="0 0 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-entity gltf-model="#trees" position="3 1.8 -2" rotation="0 20 0" scale="1.5 1.5 1.5"></a-entity>
+      
+      <a-entity id="ambulance" gltf-model="#ambulancia" position="-3 0 1" rotation="0 -75 0" scale="0.2 0.2 0.2"
+        animation__enter="property: scale; to: 0.21 0.21 0.21;
+        dur: 200; startEvents: mouseenter"
+        animation__leave="property: scale; to: 0.2 0.2 0.2;
+        dur: 200; startEvents: mouseleave"></a-entity>
+      </a-entity>
+      </a-entity>
+      <a-entity gltf-model="#bed" position="1 0.2 0" rotation="0 -30 0" scale="1.5 1.5 1.5"></a-entity>  
+      <a-entity gltf-model="#IVfluid" position="0.5 0.7 0" rotation="0 30 0" scale="1.5 1.5 1.5"></a-entity>
+      <a-entity gltf-model="#icono_ambulancia" position="2 0.5 0" rotation="0 -75 0" scale="0.2 0.2 0.2"
+        animation__enter="property: scale; to: 0.3 0.3 0.3;
+        dur: 200; startEvents: mouseenter"
+        animation__leave="property: scale; to: 0.2 0.2 0.2;
+        dur: 200; startEvents: mouseleave"
+        animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 3000; easing: linear"
+        sound="src: #interact; on: click; positional: true"></a-entity>
+      <a-entity camera="fov:60" look-controls wasd-controls position="0 1.6 0"
+      sound="src: #ambient_forest; loop: true; autoplay: true; positional: false; volume: 0.5"
+      light="type: spot; color: #FFFFFF; intensity: 3; angle: 35; penumbra: 0.5; distance: 15"
+      position="0 0 -0.5"
+      rotation="0 0 0"></a-entity>
+      <a-text value="Salir de ejercicio" color="#FFFFFF" position="-1.5 2.5 0.5" rotation="0 90 0"
+      align="center" width="4" color="#222D62"></a-text>
+      </a-box>
+      <a-box position="0 0.2 0" rotation="0 70 0" color="#4CC3D9" scale="0.5 0.5 0.5"></a-box>
+
+      <a-plane rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+      <a-sky color="#1B2033"></a-sky>
+
+      <a-light type="ambient" color="#8FA0D8" intensity="0.25"></a-light>
+      <a-light type="point" color="#FF9A3C" intensity="3" position="0.5 1.5 0.5"></a-light>
+    </a-scene>
+    <script>
+
+const ambulance = document.querySelector("#ambulance");
+const fade = document.querySelector("#fade");
+const finishSound = document.querySelector("#finish");
+
+let transitioning = false;
+
+ambulance.addEventListener("click", function() {
+
+    // Prevent multiple clicks
+    if (transitioning) return;
+
+    transitioning = true;
+
+    // Play finish sound
+    finishSound.play();
+
+    // Fade to black
+    fade.classList.add("active");
+
+    // Load next HTML after transition
+    setTimeout(function() {
+
+        window.location.href = "titulo.html";
+
+    }, 5000);
+
+});
+
+</script>
+  </body>
+</html>
